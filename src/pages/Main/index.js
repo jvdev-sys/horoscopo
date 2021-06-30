@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { StyleSheet, Modal, Text, View, TouchableOpacity, StatusBar, Image} from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
 import useApi from '../../hooks/useApi';
-import mascara from '../../assets/mascara.png'
+import { formatDateToShow , formatDateToQuery } from '../../services/dateFormat';
+import DatePicker from '../../components/DatePicker';
 import signs from '../../services/signs';
 import Button from '../../components/Button';
 import Icon from '../../services/loadFont';
@@ -11,14 +11,29 @@ import SVGMain from '../../components/SVGMain';
 import ModalSign from '../../components/ModalSign';
 
 const Main = () => {
-
-    const [dt, setDt] = useState('2021-06-08');
-    const [apiData] = useApi(dt);
+    const [dt, setDt] = useState(new Date());
+    const [apiData] = useApi(formatDateToQuery(dt));
     const [modalVisible, setModalVisible] = useState(false);
+    const [msg, setMsg] = useState('Escolha um signo e descubra o horóscopo do dia!');
+    const [msgColor, setMsgColor] = useState('#000');
     const statusBarBackgroundColor = modalVisible ? "#54423e" : "#fac6c5";
     const signsIcons = signs;
     const [currentSign, setCurrentSign] = useState();
     const [currentHoroscopeSign, setCurrentHoroscopeSign] = useState();
+
+    const dateSelect = (date) => {
+        setDt(date);
+        let dateLimit1 = new Date('2021-06-08');
+        let dateLimit2 = new Date('2021-07-02');
+        if (date < dateLimit1 || date > dateLimit2 ){
+            setMsg('Escolha uma data entre 08/06 e 01/07.');
+            setMsgColor('red');
+        }
+        else{
+            setMsg('Escolha um signo e descubra o horóscopo do dia!');
+            setMsgColor('black');
+        }
+    }
 
     const openModal = (index) =>{
         if (apiData !== undefined){
@@ -26,13 +41,16 @@ const Main = () => {
                 setCurrentSign(signsIcons[index]);
                 let horoscope = apiData[0].horoscopes.filter(item => item.sign === signsIcons[index].sign)[0];
                 setCurrentHoroscopeSign(horoscope);
+
                 setModalVisible(true);
             }
+            else {
+                
+            }
+            
         }
         
-        else{
-
-        }
+        
         
     }
 
@@ -43,10 +61,11 @@ const Main = () => {
     return (
 
         <View >
+            <StatusBar barStyle='dark-content' backgroundColor={statusBarBackgroundColor} />
             <Modal transparent={true} visible={true}>
                 
                 <View style={styles.container}>
-                    <StatusBar barStyle='dark-content' backgroundColor={statusBarBackgroundColor} />
+                    
                     <View>
                         <SVGMain color='#fac6c5' />
                     </View>
@@ -66,13 +85,15 @@ const Main = () => {
                             </TouchableOpacity>
                             <Text style={styles.title}>Horóscopo</Text>
                         </View>
+                        <Text style={styles.labelDate}>{formatDateToShow(dt)}</Text>
+                        <DatePicker value={dt} onChange={dateSelect}/>
                         <TouchableOpacity onPress={() => { }}>
                             <Icon name="more-vert" size={25} color="#3a383a" />
                         </TouchableOpacity>
 
                     </View >
                     <View style={styles.buttonContainer}>
-                        <Text style={styles.labelTop}>Escolha um signo e descubra o horóscopo do dia!</Text>
+                        <Text style={[styles.labelTop, {color: msgColor}]}>{msg}</Text>
                         <View style={styles.viewButtonRow1}>
                             <Button sign={signsIcons[0]} onPress={() => openModal(0)} />
                             <Button sign={signsIcons[1]} onPress={() => openModal(1)} />
@@ -174,6 +195,11 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: -10,
         marginLeft: 20,
+    },
+    
+    labelDate : {
+        alignSelf: 'center',
+        paddingRight: 5,
     },
 
     viewButtonRow1:{

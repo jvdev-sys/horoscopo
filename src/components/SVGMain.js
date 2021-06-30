@@ -26,14 +26,6 @@ const SVGModal = () => {
                     opacity={0.8}
                     fill='#fcdedd'
                 />
-                {/* 
-                <Circle
-                    cx="350"
-                    cy="-450"
-                    r={500}
-                    opacity={0.5}
-                    fill={}
-                /> */}
             </Svg>
         </>
     )

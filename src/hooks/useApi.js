@@ -9,7 +9,7 @@ const useApi = (dt) => {
             const response = await api.get('/api/horoscope/test');
             let responseData = response.data.result.filter(item => item.dt === dt);
             setApiData(responseData);
-            console.log("useApi :: loadApiData :: response :: ", JSON.stringify(responseData));
+           // console.log("useApi :: loadApiData :: response :: ", JSON.stringify(responseData));
         }
 
         loadApiData();
