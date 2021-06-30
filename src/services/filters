@@ -1,0 +1,15 @@
+useEffect(() => {
+    async function loadHoroscopo () {
+      const response = await api.get('/api/horoscope/test');
+      let horoscopeData = response.data.result.filter(item => item.dt === '2021-06-08');
+      if (horoscopeData.length > 0){
+        setHoroscope(horoscopeData[0].horoscopes[5]);
+        setSign(signsData.filter(item => item.sign === horoscopeData[0].horoscopes[5].sign)[0].logo);
+      }else{
+        console.log('Data não encontrada na API');
+        setHoroscope(null);
+      }
+      
+    }
+    loadHoroscopo();
+  }, [])
