@@ -1,7 +1,8 @@
 import React from 'react'
 import Svg, { Circle } from 'react-native-svg';
 
-const SVGModal = () => {
+const SVGMain = () => {
+    //Arte da tela Main
     return (
         <>
             <Svg width="100%" height="600">
@@ -31,4 +32,4 @@ const SVGModal = () => {
     )
 }
 
-export default SVGModal;
+export default SVGMain;

@@ -11,6 +11,7 @@ import S from '../assets/S.png';
 import Touro from '../assets/Touro.png';
 import Virgem from '../assets/Virgem.png';
 
+//Array dos ícones de signos importados acima
 
 const signs = [
     {

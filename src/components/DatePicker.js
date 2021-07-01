@@ -19,7 +19,7 @@ const DatePicker = ({ value, onChange, isVisible }) => {
     return (
         <View>
             <TouchableOpacity  onPress={() => setModalVisible(true)}>
-                <Icon name="today" size={25} size={25} color="#3a383a"  />
+                <Icon name="today" size={25} color="#3a383a"  />
             </TouchableOpacity>
             <DateTimePickerModal
                 mode="date"

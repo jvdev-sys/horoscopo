@@ -4,6 +4,7 @@ import Svg, { Circle } from 'react-native-svg';
 
 const Button = ({sign, onPress}) => {
     return (
+        //Botão dos signos
         <View>
             <TouchableOpacity onPress={onPress} style={styles.button}>
                 <Svg width="110" height="110" style={styles.svg}>

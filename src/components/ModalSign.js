@@ -7,7 +7,6 @@ import {
     TouchableOpacity, 
     ScrollView, 
     Image} from 'react-native';
-import moment from 'moment';
 import SVGModal from './SVGModal';
 import Icon from '../services/loadFont';
 import Woman from '../assets/woman.png'
@@ -26,35 +25,37 @@ const ModalSign = ({
             <Modal 
                 visible={isVisible} 
                 animationType='fade' 
-                transparent={true}
-                
-                
+                transparent={true}  
             >
+                {/* View responsável pelo background escurecido */}
                 <View style={styles.backgroundContainer}>
                     
                 </View>
-               
-                
                 <View style={styles.container}>
+                    {/* SVG que gera as cores do topo do modal */}
                     <View >
                         <SVGModal color={sign && sign.color} />
                     </View>
                     <View style={styles.contentContainer}>
                         <View style={styles.closeButton}>
+                            {/* Botão close superior */}
                             <TouchableOpacity onPress={onClose}>
                                 <Icon name="close" style={styles.customIcon} />
                             </TouchableOpacity>
                         </View>
-
+                        {/* Conteúdo do título do modal */}
                         <Image source={sign && sign.logo} style={styles.signImg}/>
                         <Text style={styles.title}>{sign && sign.sign}</Text>
                         <Text style={styles.label}>{formatDateToShow(dt)}</Text>
                        
                     </View>
+                    {/* Texto Modal */}
                     <ScrollView >
                         <Text style={styles.description}>{horoscope && horoscope.description}</Text>
                     </ScrollView>
+                    {/* Arte inferior Modal */}
                     <Image source={Woman} style={styles.woman} />
+                    {/* Botão de fechar inferior */}
                     <TouchableOpacity style={styles.backButton} onPress={onClose} >
                         <Text style={styles.labelBackButton}>Veja o horóscopo de outros signos!</Text>
                     </TouchableOpacity>

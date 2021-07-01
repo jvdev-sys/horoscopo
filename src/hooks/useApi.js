@@ -6,13 +6,16 @@ const useApi = (dt) => {
 
     useEffect(() => {
         async function loadApiData() {
+            //Consome os dados da API fornecida
             const response = await api.get('/api/horoscope/test');
+            //Filtra os dados obtidos por data fornecida
             let responseData = response.data.result.filter(item => item.dt === dt);
             setApiData(responseData);
-           // console.log("useApi :: loadApiData :: response :: ", JSON.stringify(responseData));
         }
 
         loadApiData();
+        //useEffect fica atento à mudança de data para modificar 
+        //e consumir novamente os dados caso necessário
     }, [dt]);
 
     return [apiData];
