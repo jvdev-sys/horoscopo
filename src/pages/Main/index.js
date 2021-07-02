@@ -18,7 +18,6 @@ const Main = ({route}) => {
     const signsRow2 = signs.filter((item, index) => index >= 3 && index < 6);
     const signsRow3 = signs.filter((item, index) => index >= 6 && index < 9);
     const signsRow4 = signs.filter((item, index) => index >= 9 && index < 12);
-    const signsIcons = signs;
     const [currentSign, setCurrentSign] = useState(route.params.selectedValue);
     const [currentHoroscopeSign, setCurrentHoroscopeSign] = useState();
 
