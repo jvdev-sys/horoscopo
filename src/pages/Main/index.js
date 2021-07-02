@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
-import { StyleSheet, Modal, Text, View, TouchableOpacity, StatusBar, Image} from 'react-native';
+import React, { useState, useEffect } from 'react'
+import { StyleSheet, Modal, Text, View, TouchableOpacity, StatusBar, Image, Dimensions} from 'react-native';
 import useApi from '../../hooks/useApi';
 import { formatDateToShow , formatDateToQuery } from '../../services/dateFormat';
-import DatePicker from '../../components/DatePicker';
+import Header from '../../assets/header.png'
 import signs from '../../services/signs';
 import Button from '../../components/Button';
 import Icon from '../../services/loadFont';
@@ -10,43 +10,32 @@ import Icon from '../../services/loadFont';
 import SVGMain from '../../components/SVGMain';
 import ModalSign from '../../components/ModalSign';
 
-const Main = () => {
+const Main = ({route, navigation}) => {
     //Inicializa com a data atual para consultar o horóscopo em seguida
-    const [dt, setDt] = useState(new Date());
+    const dt = new Date();
     //Consome dados da API e filtra por data -- utilizando hook para separar os services da interface
     const [apiData] = useApi(formatDateToQuery(dt));
     const [modalVisible, setModalVisible] = useState(false);
-    //Mensagem exibida no topo da tela
-    const [msg, setMsg] = useState('Escolha um signo e descubra o horóscopo do dia!');
-    const [msgColor, setMsgColor] = useState('#000');
-    const statusBarBackgroundColor = modalVisible ? "#54423e" : "#fac6c5";
+    const msgColor = "#3a383a";
     //Array de icones dos signos guardados num arquivo de services -> services/signs.js
     const signsIcons = signs;
-    const [currentSign, setCurrentSign] = useState();
+    const [currentSign, setCurrentSign] = useState(route.params.selectedValue);
     const [currentHoroscopeSign, setCurrentHoroscopeSign] = useState();
 
-    const dateSelect = (date) => {
-        //seta a data escolhida no datePickerModal
-        setDt(date);
-        //limite inferior de data para filtro
-        let dateLimit1 = new Date('2021-06-08');
-        //limite superior de data para filtro -- até a data de entrega do projeto
-        let dateLimit2 = new Date('2021-07-04');
-        if (date < dateLimit1 || date > dateLimit2 ){
-            //Se a data não estiver dentro desse limite, 
-            //uma mensagem de aviso é mostrada na tela, do contrário, mostra-se a anterior com cor normal
-            //talvez a mensagem não esteja adequada aos padrões da empresa, 
-            //mas isso poderemos alinhar no futuro
-            setMsg('Escolha uma data entre 08/06 e 03/07.');
-            setMsgColor('red');
+    useEffect(() => {
+        function loadApiData() {
+            if(apiData !== undefined){
+                if (apiData[0] !== undefined) {
+                    let horoscope = apiData[0].horoscopes.filter(item => item.sign === currentSign.sign)[0];
+                    console.log(currentSign);
+                    setCurrentHoroscopeSign(horoscope);
+                    setModalVisible(true);
+                }
+            }  
         }
-        else{
-            //se a data estiver nesse intervalo, a mensagem é mantida ou modificada para essa,
-            // e a cor também muda 
-            setMsg('Escolha um signo e descubra o horóscopo do dia!');
-            setMsgColor('black');
-        }
-    }
+        loadApiData();
+    }, [apiData])
+    
 
     const openModal = (index) =>{
         //Só entra nessa condicional se apiData retornar algum valor
@@ -68,17 +57,11 @@ const Main = () => {
     }
 
     return (
-
-        <View >
-            <StatusBar barStyle='dark-content' backgroundColor={statusBarBackgroundColor} />
-            {/* O modal foi necessário para utilizar camadas e assim conseguir gerar os circulos svg de background */}
-            <Modal transparent={true} visible={true}>
-                
-                <View style={styles.container}>
-                    
-                    <View>
-                        <SVGMain />
-                    </View>
+  
+        <View style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="transparent"
+                translucent={true} />
+            <Image source={Header} style={styles.headerImg} />
                     {/* Modal dos signos de horóscopo */}
                     <ModalSign
                         isVisible={modalVisible}
@@ -88,32 +71,9 @@ const Main = () => {
                         onClose={onClose}
                     />
 
-                    <View style={styles.header}>
-                        <View style={styles.viewTitle}>
-                            <TouchableOpacity onPress={() => { }}>
-                                <Icon name="arrow-back" style={styles.buttonTop} />
-                            </TouchableOpacity>
-                            <Text style={styles.title}>Horóscopo</Text>
-                        </View>
-                        {/* Acredito não estar no escopo do projeto, 
-                        mas fiz esse acréscimo de controle de datas
-                        do horóscopo, somente funciona se a data for superior a 08-06, 
-                        já que a API não tem dados de datas inferiores a essa.
-                        Isso é interessante para o cliente visualizar os horoscopos dos dias
-                        que passaram e ele pode não ter visualizado. 
-                        Pra desativar isso é relativamente simples e requer apenas que se apaguem
-                        4 linhas de código.
-                        */}
-                        <Text style={styles.labelDate}>{formatDateToShow(dt)}</Text>
-                        <DatePicker value={dt} onChange={dateSelect}/>
-                        <TouchableOpacity onPress={() => { }}>
-                            <Icon name="more-vert" style={styles.buttonTop} />
-                        </TouchableOpacity>
-
-                    </View >
                     {/* Botões dos signos */}
                     <View style={styles.buttonContainer}>
-                        <Text style={[styles.labelTop, {color: msgColor}]}>{msg}</Text>
+                <Text style={[styles.labelTop, { color: msgColor }]}>Escolha um signo e descubra o horóscopo do dia!</Text>
                         <View style={styles.viewButtonRow1}>
                             <Button sign={signsIcons[0]} onPress={() => openModal(0)} />
                             <Button sign={signsIcons[1]} onPress={() => openModal(1)} />
@@ -169,11 +129,7 @@ const Main = () => {
                             <Text style={styles.labelIcon}>Descontos</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
-
-            </Modal>
-        
-      </View>
+            </View>
     )
 }
 
@@ -184,13 +140,18 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: 'white',
         flex: 1,
-        marginTop: -100,
+    },
+
+    headerImg:{
+        width: Dimensions.get('window').width,
+        height: 90,
+        borderBottomLeftRadius: 30,
+        borderBottomRightRadius: 30,
     },
     
     header: {
         justifyContent: 'flex-start',
         flexDirection: 'row',
-        marginTop: -480,
         paddingTop: 20,
         paddingBottom: 10,
         paddingHorizontal: 15,
@@ -200,13 +161,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     title: {
-        fontSize: 18,
+        color: "#3a383a",
+        fontSize: 16,
         paddingHorizontal: 5,
     },
 
     buttonTop:{
         color:"#3a383a",
-        fontSize: 25,
+        fontSize: 18,
     },
 
     buttonContainer: {
@@ -215,12 +177,14 @@ const styles = StyleSheet.create({
     },
 
     labelTop: {
+        fontSize: 12,
         marginTop: 10,
         marginBottom: -10,
         marginLeft: 20,
     },
     
     labelDate : {
+        color: "#3a383a",
         alignSelf: 'center',
         paddingRight: 5,
     },

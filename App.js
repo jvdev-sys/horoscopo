@@ -1,13 +1,12 @@
 import React from 'react'
-import Main from "./src/pages/Main";
+import 'react-native-gesture-handler';
+import Routes from "./src/routes";
 
 const App = () => {
 
   return (
-    <Main />
+    <Routes />
   );
 };
-
-
 
 export default App;

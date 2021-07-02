@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
         paddingTop: 32,
     },
     label: {
-        fontSize: 14,
+        fontSize: 12,
+        color: "#3a383a",
     },
     logo: {
         justifyContent: 'center',

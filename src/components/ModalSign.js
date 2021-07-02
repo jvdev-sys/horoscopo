@@ -6,8 +6,8 @@ import {
     Modal, 
     TouchableOpacity, 
     ScrollView, 
-    Image} from 'react-native';
-import SVGModal from './SVGModal';
+    Image,
+    Dimensions} from 'react-native';
 import Icon from '../services/loadFont';
 import Woman from '../assets/woman.png'
 import { formatDateToShow } from '../services/dateFormat';
@@ -24,38 +24,37 @@ const ModalSign = ({
         <View >
             <Modal 
                 visible={isVisible} 
-                animationType='fade' 
-                transparent={true}  
+                animationType='slide' 
+                transparent={true}
+                statusBarTranslucent={true}
             >
                 {/* View responsável pelo background escurecido */}
                 <View style={styles.backgroundContainer}>
-                    
+                    <Text style={styles.phoneLine}></Text>
                 </View>
                 <View style={styles.container}>
-                    {/* SVG que gera as cores do topo do modal */}
-                    <View >
-                        <SVGModal color={sign && sign.color} />
-                    </View>
+                    
+                    <Image source={sign && sign.art} style={styles.imgArt} />
                     <View style={styles.contentContainer}>
                         <View style={styles.closeButton}>
-                            {/* Botão close superior */}
+                         
                             <TouchableOpacity onPress={onClose}>
                                 <Icon name="close" style={styles.customIcon} />
                             </TouchableOpacity>
                         </View>
-                        {/* Conteúdo do título do modal */}
+                     
                         <Image source={sign && sign.logo} style={styles.signImg}/>
                         <Text style={styles.title}>{sign && sign.sign}</Text>
-                        <Text style={styles.label}>{formatDateToShow(dt)}</Text>
+                        <Text style={styles.dateLabel}>{formatDateToShow(dt)}</Text>
                        
                     </View>
-                    {/* Texto Modal */}
+                    
                     <ScrollView >
                         <Text style={styles.description}>{horoscope && horoscope.description}</Text>
                     </ScrollView>
-                    {/* Arte inferior Modal */}
+                 
                     <Image source={Woman} style={styles.woman} />
-                    {/* Botão de fechar inferior */}
+                    
                     <TouchableOpacity style={styles.backButton} onPress={onClose} >
                         <Text style={styles.labelBackButton}>Veja o horóscopo de outros signos!</Text>
                     </TouchableOpacity>
@@ -75,23 +74,39 @@ const styles = StyleSheet.create({
         opacity: 0.7,
         flex: 1,
     },
+    phoneLine:{
+        borderRadius: 5,
+        width: 50,
+        height: 5,
+        backgroundColor: '#bbd6e1',
+        alignSelf:'center',
+        marginTop: Dimensions.get('window').height - 740,
+    },
 
     container: {
         alignSelf: 'center',
-        width: '95%',
+        width: '100%',
         height: '90%',
         position: 'absolute',
-        marginBottom: 5,
-        bottom: 5,
+        bottom: 0,
         backgroundColor: 'white',
-        borderRadius: 20,
+        borderTopLeftRadius: 50,
+        borderTopRightRadius: 50,
         flex: 1,
         elevation: 15,
         shadowColor: 'black',
     },
+    imgArt:{
+        borderTopLeftRadius:15,
+        borderTopRightRadius: 15,
+        width: Dimensions.get('window').width,
+        height: 100,
+        resizeMode: 'stretch',
+    },
 
     contentContainer:{
-        marginTop: -250,
+        marginTop: Dimensions.get('window').height - 910,
+        height: Dimensions.get('window').height - 500,
     },
 
     closeButton: {
@@ -101,7 +116,7 @@ const styles = StyleSheet.create({
     customIcon: {
         color: "#3a383a",
         alignSelf: 'center',
-        fontSize: 25,
+        fontSize: 16,
         margin: 10,
     },
 
@@ -114,20 +129,20 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 32,
+        fontSize: 24,
         fontWeight: '700',
         alignSelf: 'center',
         paddingTop: 30,
     }, 
-    label: {
-        fontSize: 14,
+    dateLabel: {
+        fontSize: 11,
         alignSelf: 'center',
         paddingTop: -5,
         paddingBottom: 10,
     },
 
     description: {
-        fontSize: 16,
+        fontSize: 13,
         paddingHorizontal: 60,
         alignSelf: 'center',
     },
@@ -146,10 +161,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignSelf: 'center',
         marginTop: 10,
-        marginBottom: 10,
+        marginBottom: 25,
         borderRadius: 30,
     },
     labelBackButton: {
+        fontWeight: 'bold',
         color: 'white',
         alignSelf: 'center',
     }
