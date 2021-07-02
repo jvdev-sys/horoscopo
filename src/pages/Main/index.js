@@ -1,57 +1,47 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Modal, Text, View, TouchableOpacity, StatusBar, Image, Dimensions} from 'react-native';
-import useApi from '../../hooks/useApi';
-import { formatDateToShow , formatDateToQuery } from '../../services/dateFormat';
+import { StyleSheet, Text, View, TouchableOpacity, StatusBar, Image, Dimensions} from 'react-native';
 import Header from '../../assets/header.png'
 import signs from '../../services/signs';
 import Button from '../../components/Button';
 import Icon from '../../services/loadFont';
-
-import SVGMain from '../../components/SVGMain';
 import ModalSign from '../../components/ModalSign';
 
-const Main = ({route, navigation}) => {
+const Main = ({route}) => {
     //Inicializa com a data atual para consultar o horóscopo em seguida
     const dt = new Date();
     //Consome dados da API e filtra por data -- utilizando hook para separar os services da interface
-    const [apiData] = useApi(formatDateToQuery(dt));
+    const [apiData] = route.params.apiData;
     const [modalVisible, setModalVisible] = useState(false);
     const msgColor = "#3a383a";
     //Array de icones dos signos guardados num arquivo de services -> services/signs.js
+    const signsRow1 = signs.filter((item,index) => index < 3);
+    const signsRow2 = signs.filter((item, index) => index >= 3 && index < 6);
+    const signsRow3 = signs.filter((item, index) => index >= 6 && index < 9);
+    const signsRow4 = signs.filter((item, index) => index >= 9 && index < 12);
     const signsIcons = signs;
     const [currentSign, setCurrentSign] = useState(route.params.selectedValue);
     const [currentHoroscopeSign, setCurrentHoroscopeSign] = useState();
 
     useEffect(() => {
         function loadApiData() {
-            if(apiData !== undefined){
-                if (apiData[0] !== undefined) {
-                    let horoscope = apiData[0].horoscopes.filter(item => item.sign === currentSign.sign)[0];
-                    console.log(currentSign);
-                    setCurrentHoroscopeSign(horoscope);
-                    setModalVisible(true);
-                }
-            }  
+            console.log(signsRow4[0].sign);
+            let horoscope = apiData.horoscopes.filter(item => item.sign === currentSign.sign)[0];
+            setCurrentHoroscopeSign(horoscope);
+            setModalVisible(true);
         }
         loadApiData();
     }, [apiData])
     
 
-    const openModal = (index) =>{
-        //Só entra nessa condicional se apiData retornar algum valor
-        if (apiData !== undefined){
-            // o modal só é exibido se caso existir os dados na API
-            if (apiData[0] !== undefined) {
-                //escolhe o signo dentro do array de icones de signo e seta na variável para gerar o modal
-                setCurrentSign(signsIcons[index]);
-                //filtra o texto da API para o signo escolhido ao clicar e pega a primeira ocorrencia, pois resulta um array de tamanho 01(um).
-                let horoscope = apiData[0].horoscopes.filter(item => item.sign === signsIcons[index].sign)[0];
-                setCurrentHoroscopeSign(horoscope);
-                setModalVisible(true);
-            }
-        }   
+    const openModal = (item) =>{       
+        //escolhe o signo dentro do array de icones de signo e seta na variável para gerar o modal
+        setCurrentSign(item);
+        //filtra o texto da API para o signo escolhido ao clicar e pega a primeira ocorrencia, pois resulta um array de tamanho 01(um).
+        let horoscope = apiData.horoscopes.filter(item => item.sign === item.sign)[0];
+        setCurrentHoroscopeSign(horoscope);
+        setModalVisible(true);
     }
-
+    
     const onClose = () =>{
         setModalVisible(false);
     }
@@ -75,26 +65,26 @@ const Main = ({route, navigation}) => {
                     <View style={styles.buttonContainer}>
                 <Text style={[styles.labelTop, { color: msgColor }]}>Escolha um signo e descubra o horóscopo do dia!</Text>
                         <View style={styles.viewButtonRow1}>
-                            <Button sign={signsIcons[0]} onPress={() => openModal(0)} />
-                            <Button sign={signsIcons[1]} onPress={() => openModal(1)} />
-                            <Button sign={signsIcons[2]} onPress={() => openModal(2)} />
+                            {signsRow1.map((item, index) =>{
+                                return <Button sign={item} onPress={() => openModal(item)} key={index}/>
+                            })}
+                            
                         </View>
                         <View style={styles.viewButtonRow2}>
-                            <Button sign={signsIcons[3]} onPress={() => openModal(3)} />
-                            <Button sign={signsIcons[4]} onPress={() => openModal(4)} />
-                            <Button sign={signsIcons[5]} onPress={() => openModal(5)} />
+                            {signsRow2.map((item, index) => {
+                                return <Button sign={item} onPress={() => openModal(item)} key={index} />
+                            })}
                         </View>
                         <View style={styles.viewButtonRow2}>
-                            <Button sign={signsIcons[6]} onPress={() => openModal(6)} />
-                            <Button sign={signsIcons[7]} onPress={() => openModal(7)} />
-                            <Button sign={signsIcons[8]} onPress={() => openModal(8)} />
+                            {signsRow3.map((item, index) => {
+                                return <Button sign={item} onPress={() => openModal(item)} key={index} />
+                            })}
                         </View>
                         <View style={styles.viewButtonRow2}>
-                            <Button sign={signsIcons[9]} onPress={() => openModal(9)} />
-                            <Button sign={signsIcons[10]} onPress={() => openModal(10)} />
-                            <Button sign={signsIcons[11]} onPress={() => openModal(11)} />
+                            {signsRow4.map((item, index) => {
+                                return <Button sign={item} onPress={() => openModal(item)} key={index} />
+                            })}
                         </View>
-
                     </View>
                     {/* Rodapé com botões que estão sem função atualmente, 
                     por não estar no escopo desse projeto em específico */}

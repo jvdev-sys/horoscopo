@@ -1,15 +1,33 @@
 import React , { useState } from 'react'
-import { StyleSheet, Text, View, Modal, TouchableOpacity, Image , Dimensions, StatusBar} from 'react-native';
-import Header from '../../assets/header.png'
+import { 
+    StyleSheet, 
+    Text, 
+    View, 
+    Modal, 
+    TouchableOpacity, 
+    Image, 
+    Dimensions, 
+    StatusBar,
+} from 'react-native';
+import Header from '../../assets/header.png';
+import { formatDateToQuery } from '../../services/dateFormat';
+import useApi from '../../hooks/useApi';
 import ModalPicker from '../../components/ModalPicker';
 import signs from '../../services/signs';
 
 const Splash = ({navigation}) => {
     const signsPicker = signs;
+    const dt = new Date();
+    const [apiData] = useApi(formatDateToQuery(dt));
     const [isModalVisible, setIsModalVisible] = useState(false);
    
     const onSelectedValue = (data) => {
-        navigation.navigate('Main', {selectedValue: data});
+
+        navigation.navigate('Main', {
+            selectedValue: data,
+            apiData: apiData,
+        });
+
     }
 
     return (

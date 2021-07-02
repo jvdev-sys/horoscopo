@@ -19,7 +19,8 @@ const AppScreens = () => {
                 options={({route}) => ({
                     headerTitleStyle: {
                         color: '#3a383a',
-                        fontSize: 12,
+                        fontSize: 14,
+                        
                     },
                     headerTitle: 'Escolha seu signo',
                     headerTransparent: true,
