@@ -23,7 +23,6 @@ const Main = ({route}) => {
 
     useEffect(() => {
         function loadApiData() {
-            console.log(signsRow4[0].sign);
             let horoscope = apiData.horoscopes.filter(item => item.sign === currentSign.sign)[0];
             setCurrentHoroscopeSign(horoscope);
             setModalVisible(true);
@@ -33,10 +32,10 @@ const Main = ({route}) => {
     
 
     const openModal = (item) =>{       
-        //escolhe o signo dentro do array de icones de signo e seta na variável para gerar o modal
+        
         setCurrentSign(item);
         //filtra o texto da API para o signo escolhido ao clicar e pega a primeira ocorrencia, pois resulta um array de tamanho 01(um).
-        let horoscope = apiData.horoscopes.filter(item => item.sign === item.sign)[0];
+        let horoscope = apiData.horoscopes.filter(itemOp => itemOp.sign === item.sign)[0];
         setCurrentHoroscopeSign(horoscope);
         setModalVisible(true);
     }
