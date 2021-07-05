@@ -8,6 +8,7 @@ import {
     Image, 
     Dimensions, 
     StatusBar,
+    Alert
 } from 'react-native';
 import Header from '../../assets/header.png';
 import { formatDateToQuery } from '../../services/dateFormat';
@@ -20,14 +21,19 @@ const Splash = ({navigation}) => {
     const dt = new Date();
     const [apiData] = useApi(formatDateToQuery(dt));
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [errMsg, setErrMsg] = useState("");
    
-    const onSelectedValue = (data) => {
-
-        navigation.navigate('Main', {
-            selectedValue: data,
-            apiData: apiData,
-        });
-
+    const onSelectedValue = (data) => { 
+        if(apiData !== undefined){
+            setErrMsg('');
+            navigation.navigate('Main', {
+                selectedValue: data,
+                apiData: apiData,
+            });
+        }
+        else{
+           setErrMsg('Aparentemente, você está com problemas de conexão');
+        }
     }
 
     return (
@@ -40,6 +46,7 @@ const Splash = ({navigation}) => {
                 <TouchableOpacity style={styles.selectButton} onPress={() => setIsModalVisible(true)}>
                     <Text style={styles.selectButtonText}>Escolha um signo</Text>
                 </TouchableOpacity>
+                <Text style={styles.errMsg}>{errMsg}</Text>
                 <Modal
                     visible={isModalVisible}
                     transparent={true}
@@ -93,6 +100,11 @@ const styles = StyleSheet.create({
     selectButtonText: {
         fontSize: 14,
         color: "white",
+    },
+    errMsg :{
+        paddingTop: 10,
+        fontSize: 14,
+        color: "red",
     },
     
     
