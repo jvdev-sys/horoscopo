@@ -8,61 +8,67 @@ import {
     Image, 
     Dimensions, 
     StatusBar,
-    Alert
+    ActivityIndicator,
+    Alert,
 } from 'react-native';
 import Header from '../../assets/header.png';
 import { formatDateToQuery } from '../../services/dateFormat';
 import useApi from '../../hooks/useApi';
+import NoInternetModal from '../../components/NoInternetModal';
 import ModalPicker from '../../components/ModalPicker';
 import signs from '../../services/signs';
+
+const WIDTH = Dimensions.get('window').width;
+const HEIGHT = Dimensions.get('window').height;
 
 const Splash = ({navigation}) => {
     const signsPicker = signs;
     const dt = new Date();
-    const [apiData] = useApi(formatDateToQuery(dt));
+    const [apiData, isLoading, isOffline, loadApiData] = useApi(formatDateToQuery(dt));
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [errMsg, setErrMsg] = useState("");
+
    
     const onSelectedValue = (data) => { 
-        if(apiData !== undefined){
-            setErrMsg('');
-            navigation.navigate('Main', {
-                selectedValue: data,
-                apiData: apiData,
-            });
-        }
-        else{
-           setErrMsg('Aparentemente, você está com problemas de conexão');
-        }
+        navigation.navigate('Main', {
+            selectedValue: data,
+            apiData: apiData,
+        });
     }
 
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="transparent"
                 translucent={true} />
-            <Image source={Header} style={styles.headerImg}/>
-            <View style={styles.selectContainer}>
-                <Text style={styles.titlePicker}>Qual é o seu signo?</Text>
-                <TouchableOpacity style={styles.selectButton} onPress={() => setIsModalVisible(true)}>
-                    <Text style={styles.selectButtonText}>Escolha um signo</Text>
-                </TouchableOpacity>
-                <Text style={styles.errMsg}>{errMsg}</Text>
-                <Modal
-                    visible={isModalVisible}
-                    transparent={true}
-                    animationType='fade'
-                    onRequestClose={() => setIsModalVisible(false)}
-                >
-                    <ModalPicker
-                        data={signsPicker}
-                        setIsModalVisible={setIsModalVisible}
-                        onSelectedValue={onSelectedValue}
-                    />
-                </Modal>
-                
-            </View>
             
+            <Image source={Header} style={styles.headerImg}/>
            
+            <View style={styles.selectContainer}>
+                
+                <Text style={styles.titlePicker}>Qual é o seu signo?</Text>
+                {!(isLoading) &&
+                    <TouchableOpacity style={styles.selectButton} onPress={() => setIsModalVisible(true)}>
+                        <Text style={styles.selectButtonText}>Escolha um signo</Text>
+                    </TouchableOpacity>
+                }
+                {isOffline &&
+                    <Text style={styles.titlePicker} >Aparentemete, você está sem internet</Text>
+                }
+                
+                <NoInternetModal 
+                    show={isOffline}
+                    onRetry={()=> loadApiData()}
+                    isRetrying={isLoading}
+                />
+
+                {isLoading && <ActivityIndicator color='#555' size={25} style={styles.activity} />}
+                
+                <ModalPicker
+                    data={signsPicker}
+                    isModalVisible={isModalVisible}
+                    setIsModalVisible={setIsModalVisible}
+                    onSelectedValue={onSelectedValue}
+                />
+            </View>
         </View>
     )
 }
@@ -101,11 +107,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "white",
     },
-    errMsg :{
-        paddingTop: 10,
-        fontSize: 14,
-        color: "red",
-    },
-    
-    
+
+    activity: {
+        marginTop: 10,
+    },  
 })

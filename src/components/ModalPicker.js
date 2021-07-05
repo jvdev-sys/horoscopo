@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, TouchableOpacity, ScrollView, Modal } from 'react-native'
 
 
 const WIDTH = Dimensions.get('window').width;
@@ -7,6 +7,7 @@ const HEIGHT = Dimensions.get('window').height;
 
 const ModalPicker = ({
     data,
+    isModalVisible,
     setIsModalVisible,
     onSelectedValue,
 }) => {
@@ -29,16 +30,25 @@ const ModalPicker = ({
     
 
     return (
-        <TouchableOpacity
-            style={styles.container}
-            onPress={() => setIsModalVisible(false)}
+
+        <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType='fade'
+            onRequestClose={() => setIsModalVisible(false)}
         >
-            <View style={styles.modal}>
-                <ScrollView>
-                    {options}
-                </ScrollView>
-            </View>
-        </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.container}
+                onPress={() => setIsModalVisible(false)}
+            >
+                <View style={styles.modal}>
+                    <ScrollView>
+                        {options}
+                    </ScrollView>
+                </View>
+            </TouchableOpacity>
+        </Modal>
+        
     )
 }
 
