@@ -88,7 +88,7 @@ const signs = [
     },
     {
         logo: S,
-        sign: 'Saommgitário',
+        sign: 'Sagitário',
         color: '#b2d59b',
         art: sargitarioArt,
     },
