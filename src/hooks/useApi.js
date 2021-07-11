@@ -21,18 +21,21 @@ const useApi = (dt) => {
 
     const loadApiData = useCallback(async () => {
         setIsLoading(true);
-        console.log(isLoading);
-        //Consome os dados da API fornecida
-        try {
-            const response = await api.get('/api/horoscope/test');
-            //Filtra os dados obtidos por data fornecida
-            let responseData = response.data.result.filter(item => item.dt === dt);
-            setApiData(responseData);
-            setIsLoading(false);
-            // console.log(isLoading);
-        } catch (error) {
-            console.log(error);
-        }
+        //Consome os dados da API fornecida  
+        console.log(isOffline);
+        
+            try {
+                const response = await api.get('/api/horoscope/test');
+                //Filtra os dados obtidos por data fornecida
+                let responseData = response.data.result.filter(item => item.dt === dt);
+                setApiData(responseData);
+                setIsLoading(false);
+                isOffline && setOfflineStatus(false);
+                // console.log(isLoading);
+            } catch (error) {
+                console.log(error);
+            }
+        
     }, [isOffline]);
 
     return [apiData, isLoading, isOffline, loadApiData];

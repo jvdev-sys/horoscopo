@@ -50,15 +50,14 @@ const Splash = ({navigation}) => {
                         <Text style={styles.selectButtonText}>Escolha um signo</Text>
                     </TouchableOpacity>
                 }
-                {isOffline &&
-                    <Text style={styles.titlePicker} >Aparentemete, você está sem internet</Text>
+                {isOffline && 
+                    < NoInternetModal 
+                        show={isOffline}
+                        onRetry={() => loadApiData()}
+                        isRetrying={false}
+                    />
                 }
                 
-                <NoInternetModal 
-                    show={isOffline}
-                    onRetry={()=> loadApiData()}
-                    isRetrying={isLoading}
-                />
 
                 {isLoading && <ActivityIndicator color='#555' size={25} style={styles.activity} />}
                 

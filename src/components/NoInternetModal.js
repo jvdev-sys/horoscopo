@@ -28,14 +28,15 @@ export default NoInternetModal;
 
 const styles = StyleSheet.create({
     modal: {
-        justifyContent: 'center',
+        justifyContent: 'flex-end',
         margin: 0,
+       
     },
     modalContainer: {
         backgroundColor: '#fff',
         paddingHorizontal: 16,
         paddingTop: 20,
-        paddingBottom: 40,
+        paddingBottom: 30,
         alignItems: 'center',
     },
     modalTitle: {
