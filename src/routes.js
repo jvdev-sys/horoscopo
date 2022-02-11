@@ -16,12 +16,8 @@ const AppScreens = () => {
             <Stack.Screen 
                 name="Splash" 
                 component={Splash}
-                options={({route}) => ({
-                    headerTitleStyle: {
-                        color: '#3a383a',
-                        fontSize: 14,
-                        
-                    },
+                options={() => ({
+                    
                     headerTitle: 'Escolha seu signo',
                     headerTransparent: true,
                 })}
